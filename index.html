@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Дерево · Части речи</title>
+<style>
+:root{--ink:#1f2a1f;--bg:#f4f1e8;--card:#fff;--soil:#6b4423;--root:#a8713a;--rootl:#d9b384;--leaf:#7bc47f;--leafd:#2f7a3a;--sky:#e6f2ff;--line:#e3dccb;--acc:#c2410c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#eef2ea;--bg:#1b2118;--card:#252d21;--line:#3a4434;--sky:#233246;--soil:#4a3018}}
+:root[data-theme="dark"]{--ink:#eef2ea;--bg:#1b2118;--card:#252d21;--line:#3a4434;--sky:#233246;--soil:#4a3018}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--ink);padding:24px 16px 60px;line-height:1.55}
+.page{max-width:860px;margin:0 auto}
+.header{text-align:center;margin-bottom:20px}
+h1{font-size:28px;font-weight:800;margin-bottom:6px}
+.header p{font-size:15px;opacity:.8}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;justify-content:center}
+.tabs button{padding:9px 18px;border-radius:22px;border:2px solid var(--leafd);background:var(--card);color:var(--leafd);font:700 14px inherit;font-family:inherit;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--leafd);color:#fff}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.tab{display:none}.tab.on{display:block}
+.sky{background:var(--sky);border-radius:20px;padding:22px 14px 0;overflow:hidden}
+.tree{display:flex;flex-direction:column;align-items:center}
+.crown{width:min(100%,540px);background:var(--leaf);border:3px solid var(--leafd);border-radius:50% 50% 46% 46%/58% 58% 42% 42%;padding:30px 28px;text-align:center;color:#12361a;font-size:17px;font-weight:600;cursor:pointer;font-family:inherit}
+.crown b{display:block;font-size:20px;margin-bottom:4px}
+.trunk{width:170px;background:var(--soil);color:#fff;text-align:center;padding:14px 8px;font-size:15px;font-weight:700;border:0;cursor:pointer;font-family:inherit;border-radius:0}
+.trunk small{display:block;font-weight:400;font-size:12.5px;opacity:.9}
+.ground{width:100%;height:14px;background:var(--leafd);margin-top:0}
+.soil{background:var(--soil);padding:18px 12px 20px;margin:0 -14px}
+.soil h3{color:#fde68a;font-size:14px;text-align:center;margin-bottom:10px;font-weight:700}
+.roots{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:12px}
+.root{padding:12px 16px;border-radius:14px;border:2px solid var(--rootl);background:var(--root);color:#fff;font:700 15px inherit;font-family:inherit;cursor:pointer;min-width:120px}
+.root.thin{background:#8a6a45;border-style:dashed;font-size:14px;min-width:100px;padding:9px 12px}
+.root[aria-pressed="true"]{outline:4px solid #fde68a;outline-offset:2px;background:#c4813f}
+.shoots{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin-top:6px}
+.shoot{padding:10px 16px;border-radius:14px;border:2px solid #a7f3d0;background:#2f7a3a;color:#fff;font:700 14px inherit;font-family:inherit;cursor:pointer}
+.shoot[aria-pressed="true"]{outline:4px solid #fde68a;outline-offset:2px}
+.lbl{color:#fde68a;font-size:13px;text-align:center;margin:6px 0}
+.info{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:18px 20px;margin-top:16px}
+.info h2{font-size:22px;margin-bottom:8px}
+.analog{background:#fff7d6;border-left:6px solid #f59e0b;border-radius:0 12px 12px 0;padding:12px 16px;font-size:17px;color:#5b3b00;margin-bottom:12px}
+.q{font-size:17px;margin-bottom:8px}
+.q b{color:var(--acc)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{background:var(--bg);border:2px solid var(--line);border-radius:20px;padding:4px 14px;font-size:15px;font-weight:600}
+.dont{background:#fee2e2;border-radius:10px;padding:9px 14px;font-size:14px;color:#7f1d1d;margin-top:8px}
+.hint{text-align:center;font-size:14px;opacity:.75;margin:10px 0}
+.gstats{display:flex;justify-content:space-around;background:var(--leafd);color:#fff;border-radius:14px;padding:12px 16px;margin-bottom:14px;text-align:center}
+.gstats div b{display:block;font-size:24px}
+.gstats div span{font-size:11px;letter-spacing:.6px;text-transform:uppercase;opacity:.85}
+.word{background:var(--card);border:3px solid var(--leafd);border-radius:18px;padding:22px;text-align:center;font-size:34px;font-weight:800;margin-bottom:12px}
+.word small{display:block;font-size:14px;font-weight:400;opacity:.7;margin-top:4px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.opt{padding:12px 10px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:700 14px inherit;font-family:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--leafd)}
+.opt:disabled{cursor:default}
+.opt.good{background:#d1fae5;border-color:#34d399;color:#065f46}
+.opt.bad{background:#fee2e2;border-color:#f87171;color:#991b1b}
+.fb{margin-top:12px;border-radius:12px;padding:12px 16px;font-size:16px;background:var(--card);border:2px solid var(--line)}
+.next{display:block;margin:12px auto 0;padding:11px 28px;border-radius:12px;border:0;background:var(--leafd);color:#fff;font:700 16px inherit;font-family:inherit;cursor:pointer}
+.fin{background:#fffbeb;border:2px solid #fcd34d;border-radius:14px;padding:18px;text-align:center;font-size:18px;color:#78350f}
+@media(max-width:560px){.crown{padding:22px 16px;font-size:15px}.root{min-width:calc(50% - 8px)}}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="header"><h1>Части речи: дерево языка</h1>
+<p>Нажимай на части дерева и читай, как их запомнить</p></div>
+<div class="tabs" id="tabs" role="tablist">
+<button role="tab" data-t="tree" aria-selected="true">Дерево</button>
+<button role="tab" data-t="game" aria-selected="false">Игра: посади слово</button>
+</div>
+
+<div class="tab on" id="tree">
+<div class="sky"><div class="tree">
+<button class="crown" data-p="crown"><b>Листья и ветки</b>Листья — слова. Ветки — правила (не, ни, запятые).<br><small>Нажми, чтобы узнать больше</small></button>
+<button class="trunk" data-p="trunk">Ствол<small>предложение</small></button>
+<div class="ground"></div>
+</div>
+<div class="soil">
+<h3>Под землёй — корни. Это части речи. Они кормят всё дерево.</h3>
+<div class="roots" id="roots"></div>
+<div class="lbl">Тонкие корешки: слова-помощники</div>
+<div class="roots" id="thin"></div>
+<div class="lbl">Побеги от корня «Глагол»: слова из семьи глагола</div>
+<div class="shoots" id="shoots"></div>
+</div></div>
+<div class="info" id="info" aria-live="polite"></div>
+</div>
+
+<div class="tab" id="game">
+<div class="gstats"><div><b id="gOk">0</b><span>верно</span></div><div><b id="gDn">0</b><span>выполнено</span></div><div><b id="gAll">0</b><span>всего</span></div></div>
+<div id="gbox"></div>
+</div>
+</div>
+
+<script>
+function $(i){return document.getElementById(i)}
+var R={
+sush:{n:"Существительное",g:"root",a:"Ярлычок-имя на вещи. Так мы называем всех и всё вокруг: человека, животное, вещь, чувство.",q:"кто? что?",ex:["кошка","стол","Маша","радость"],d:"Слово «красивая» не называет предмет, оно описывает его. Это другой корень."},
+prl:{n:"Прилагательное",g:"root",a:"Описание предмета, как будто мы надеваем на него одежду: цвет, размер, характер. Какой он?",q:"какой? какая? какое? чей?",ex:["красивая","большой","мамина","добрый"],d:"«Красиво» (как?) уже не прилагательное. Оно отвечает на вопрос «как?», это наречие."},
+chis:{n:"Числительное",g:"root",a:"Счёт, как в магазине: сколько яблок? Три. Какой по порядку? Пятый.",q:"сколько? который по счёту?",ex:["три","десять","пятый","второй"],d:"«Тройка» и «пятёрка» называют предмет, это существительные."},
+mest:{n:"Местоимение",g:"root",a:"Дублёр имени. Чтобы не повторять «Маша, Маша, Маша», мы говорим: «Маша пришла. Она сняла куртку».",q:"указывает на предмет, но не называет его",ex:["я","ты","он","она","мы","кто","мой"],d:"У местоимения нет своего значения. Оно всегда заменяет другое слово."},
+gl:{n:"Глагол",g:"root",a:"Слова-действия: их можно показать руками. Бежит, спит, читает, думает.",q:"что делать? что сделать?",ex:["бежать","спит","читал","думаю"],d:"Глагол меняется по времени: читаю, читал, буду читать."},
+nar:{n:"Наречие",g:"root",a:"Слово «как» для действия. Кошка идёт тихо. Живёт далеко. Пришла вчера. Наречие отвечает: как? где? когда?",q:"как? где? когда? куда?",ex:["тихо","далеко","вчера","здесь"],d:"Наречие не меняется: тихо всегда тихо."},
+pred:{n:"Предлог",g:"thin",a:"Мостик между словами: в доме, на столе, из школы. Без мостика слова не связываются.",q:"вопроса нет",ex:["в","на","из","по","около"],d:""},
+soj:{n:"Союз",g:"thin",a:"Клей или скрепка. Склеивает слова и части предложения: мама И папа; хотел, НО не смог.",q:"вопроса нет",ex:["и","а","но","чтобы"],d:""},
+chas:{n:"Частица",g:"thin",a:"Приправа к слову, как соль. Добавляет оттенок или отрицание: не, ли, бы, даже.",q:"вопроса нет",ex:["не","ни","ли","бы","даже"],d:""},
+mezh:{n:"Междометие",g:"thin",a:"Эмоция одним словом, как смайлик: ах, ой, ура. Оно выражает чувства.",q:"вопроса нет",ex:["ах","ой","ура","ох"],d:""},
+prich:{n:"Причастие",g:"shoot",a:"Прилагательное, в котором спрятано действие. Спящая кошка: какая? Спящая. А спит она, поэтому слово пришло от глагола.",q:"какой? что делающий?",ex:["спящий","бегущая","прочитанная","читающий"],d:"Красивая кошка: слово не от глагола, это просто прилагательное."},
+deep:{n:"Деепричастие",g:"shoot",a:"Второе действие в одном предложении. Кошка идёт и мурлычет: «идёт, мурлыча». Слово «мурлыча» — это деепричастие.",q:"что делая? что сделав?",ex:["мурлыча","читая","прочитав","улыбаясь"],d:"Деепричастие не меняется, как и наречие. Но оно всегда от глагола."},
+crown:{n:"Листья и ветки",g:"part",a:"Листья — это слова, которые мы пишем и говорим. Ветки — правила: когда писать «не» слитно, где ставить запятую. Ветки растут от ствола, а питают их корни.",q:"",ex:[],d:""},
+trunk:{n:"Ствол — предложение",g:"part",a:"Ствол держит все ветки и листья. Так и предложение собирает слова в одну мысль.",q:"",ex:[],d:""}
+};
+var ROOT=["sush","prl","chis","mest","gl","nar"],THIN=["pred","soj","chas","mezh"],SH=["prich","deep"];
+function mk(box,ids,cls){var h="";ids.forEach(function(k){h+='<button class="'+cls+'" data-p="'+k+'" aria-pressed="false">'+R[k].n+'</button>'});$(box).innerHTML=h}
+mk("roots",ROOT,"root");mk("thin",THIN,"root thin");mk("shoots",SH,"shoot");
+function show(k){var r=R[k];
+document.querySelectorAll("[data-p]").forEach(function(b){if(b.hasAttribute("aria-pressed"))b.setAttribute("aria-pressed",b.dataset.p===k)});
+var h='<h2>'+r.n+'</h2><div class="analog">'+r.a+'</div>';
+if(r.q)h+='<div class="q"><b>Вопрос:</b> '+r.q+'</div>';
+if(r.ex.length)h+='<div class="chips">'+r.ex.map(function(x){return'<span class="chip">'+x+'</span>'}).join("")+'</div>';
+if(r.d)h+='<div class="dont"><b>Не путай.</b> '+r.d+'</div>';
+$("info").innerHTML=h}
+$("tree").addEventListener("click",function(e){var b=e.target.closest("[data-p]");if(b)show(b.dataset.p)});
+$("info").innerHTML='<div class="hint">Нажми на любой корень, побег, ствол или листья.</div>';
+
+var W=[
+["кошка","sush","Кто? Кошка. Это предмет."],["стол","sush","Что? Стол. Это предмет."],["радость","sush","Что? Радость. Так называют чувство."],
+["красивая","prl","Какая? Красивая. Это описание предмета."],["весёлый","prl","Какой? Весёлый. Это описание."],["высокий","prl","Какой? Высокий. Это описание."],
+["три","chis","Сколько? Три. Это счёт."],["пятый","chis","Который по счёту? Пятый."],
+["она","mest","Она заменяет имя: это дублёр."],["мы","mest","Мы заменяет имена: это дублёр."],
+["бежит","gl","Что делает? Бежит. Это действие."],["читать","gl","Что делать? Читать. Это действие."],["идёт","gl","Что делает? Идёт. Это действие."],
+["тихо","nar","Как идёт? Тихо. Это «как» для действия."],["вчера","nar","Когда пришёл? Вчера."],["быстро","nar","Как бежит? Быстро."],
+["спящий","prich","Какой? Спящий. Прилагательное с действием внутри."],["читающий","prich","Какой? Читающий. От глагола «читать»."],
+["мурлыча","deep","Что делая? Мурлыча. Второе действие."],["прочитав","deep","Что сделав? Прочитав. Второе действие."],
+["в","pred","Мостик между словами."],["на","pred","Мостик между словами."],
+["и","soj","Клей между словами."],["но","soj","Клей между частями предложения."],
+["не","chas","Приправа: отрицание."],["ли","chas","Приправа: вопрос."],
+["ура","mezh","Эмоция, как смайлик."],["ой","mezh","Эмоция, как смайлик."]
+];
+var ALL=ROOT.concat(SH).concat(THIN);
+var G={list:[],i:0,ok:0,dn:0,ans:null};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function gstart(){G={list:shuffle(W).slice(0,12),i:0,ok:0,dn:0,ans:null};gdraw()}
+function gdraw(){
+$("gOk").textContent=G.ok;$("gDn").textContent=G.dn;$("gAll").textContent=G.list.length;
+if(G.i>=G.list.length){$("gbox").innerHTML='<div class="fin">Готово! Верно: '+G.ok+' из '+G.list.length+'.<br>'+(G.ok>=10?"Отлично, корни ты знаешь.":"Хорошо. Загляни на вкладку «Дерево» и сыграй ещё раз.")+'</div><button class="next" id="again">Играть ещё</button>';return}
+var w=G.list[G.i];
+var h='<div class="word">'+w[0]+'<small>К какому корню относится это слово?</small></div><div class="opts">'+ALL.map(function(k){var c="";if(G.ans){if(k===w[1])c=" good";else if(k===G.ans)c=" bad"}
+return'<button class="opt'+c+'" data-k="'+k+'"'+(G.ans?' disabled':'')+'>'+R[k].n+'</button>'}).join("")+'</div>';
+if(G.ans){h+='<div class="fb">'+(G.ans===w[1]?"Верно! ":"Нет, это «"+R[w[1]].n+"». ")+w[2]+'</div><button class="next" id="nx">'+(G.i===G.list.length-1?"Итог":"Дальше")+'</button>'}
+$("gbox").innerHTML=h}
+$("gbox").addEventListener("click",function(e){
+var o=e.target.closest(".opt");
+if(o&&!G.ans){G.ans=o.dataset.k;G.dn++;if(G.ans===G.list[G.i][1])G.ok++;gdraw();return}
+if(e.target.id==="nx"){G.i++;G.ans=null;gdraw()}
+if(e.target.id==="again")gstart()});
+$("tabs").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;
+$("tabs").querySelectorAll("button").forEach(function(x){x.setAttribute("aria-selected",x===b)});
+$("tree").classList.toggle("on",b.dataset.t==="tree");$("game").classList.toggle("on",b.dataset.t==="game")});
+gstart();
+</script>
+</body>
+</html>
